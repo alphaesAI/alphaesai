@@ -1,3 +1,2 @@
-from .parser import Parser
-from .transactionformatter import TransactionFormatter
+from .ediprocessing import EDIProcessor
 from .csvconverter import CSVConverter
