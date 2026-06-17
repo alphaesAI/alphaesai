@@ -411,179 +411,184 @@
       "Ordinal": 82
     },
     {
-      "FieldName": "RaceCode",
+      "FieldName": "Race",
       "DataType": "StringType",
       "Ordinal": 83
     },
     {
-      "FieldName": "RaceDataSource",
+      "FieldName": "RaceCode",
       "DataType": "StringType",
       "Ordinal": 84
     },
     {
-      "FieldName": "ikaUniqueID",
+      "FieldName": "RaceDataSource",
       "DataType": "StringType",
       "Ordinal": 85
     },
     {
-      "FieldName": "FamilyLinkIndicator",
+      "FieldName": "ikaUniqueID",
       "DataType": "StringType",
       "Ordinal": 86
     },
     {
-      "FieldName": "InPremiumDelinquencyProcess",
+      "FieldName": "FamilyLinkIndicator",
       "DataType": "StringType",
       "Ordinal": 87
     },
     {
-      "FieldName": "ThirdPartyLiabilityEffDate",
-      "DataType": "DateType",
+      "FieldName": "InPremiumDelinquencyProcess",
+      "DataType": "StringType",
       "Ordinal": 88
     },
     {
-      "FieldName": "ThirdPartyLiabilityTrnDate",
+      "FieldName": "ThirdPartyLiabilityEffDate",
       "DataType": "DateType",
       "Ordinal": 89
     },
     {
-      "FieldName": "OwedPremium",
-      "DataType": "StringType",
+      "FieldName": "ThirdPartyLiabilityTrnDate",
+      "DataType": "DateType",
       "Ordinal": 90
     },
     {
-      "FieldName": "CaretakerFirstName",
+      "FieldName": "OwedPremium",
       "DataType": "StringType",
       "Ordinal": 91
     },
     {
-      "FieldName": "CaretakerLastName",
+      "FieldName": "CaretakerFirstName",
       "DataType": "StringType",
       "Ordinal": 92
     },
     {
-      "FieldName": "CaretakerMiddleInitial",
+      "FieldName": "CaretakerLastName",
       "DataType": "StringType",
       "Ordinal": 93
     },
     {
-      "FieldName": "EthnicityCode",
+      "FieldName": "CaretakerMiddleInitial",
       "DataType": "StringType",
       "Ordinal": 94
     },
     {
-      "FieldName": "EthnicityDatasource",
+      "FieldName": "EthnicityCode",
       "DataType": "StringType",
       "Ordinal": 95
     },
     {
-      "FieldName": "SpokenLanguage",
+      "FieldName": "EthnicityDatasource",
       "DataType": "StringType",
       "Ordinal": 96
     },
     {
-      "FieldName": "SpokenLanguagesourcecode",
+      "FieldName": "SpokenLanguage",
       "DataType": "StringType",
       "Ordinal": 97
     },
     {
-      "FieldName": "WrittenLanguageCode",
+      "FieldName": "SpokenLanguagesourcecode",
       "DataType": "StringType",
       "Ordinal": 98
     },
     {
-      "FieldName": "WrittenLanguageSourcecode",
+      "FieldName": "WrittenLanguageCode",
       "DataType": "StringType",
       "Ordinal": 99
     },
     {
-      "FieldName": "OtherLanguage",
+      "FieldName": "WrittenLanguageSourcecode",
       "DataType": "StringType",
       "Ordinal": 100
     },
     {
-      "FieldName": "OtherLanguageSourcecode",
+      "FieldName": "OtherLanguage",
       "DataType": "StringType",
       "Ordinal": 101
     },
     {
-      "FieldName": "USCitizen",
+      "FieldName": "OtherLanguageSourcecode",
       "DataType": "StringType",
       "Ordinal": 102
     },
     {
-      "FieldName": "AlternateKey1",
+      "FieldName": "USCitizen",
       "DataType": "StringType",
       "Ordinal": 103
     },
     {
-      "FieldName": "AlternateKey2",
+      "FieldName": "AlternateKey1",
       "DataType": "StringType",
       "Ordinal": 104
     },
     {
-      "FieldName": "AlternateKey3",
+      "FieldName": "AlternateKey2",
       "DataType": "StringType",
       "Ordinal": 105
     },
     {
-      "FieldName": "AlternateKey4",
+      "FieldName": "AlternateKey3",
       "DataType": "StringType",
       "Ordinal": 106
     },
     {
-      "FieldName": "AlternateKey5",
+      "FieldName": "AlternateKey4",
       "DataType": "StringType",
       "Ordinal": 107
     },
     {
-      "FieldName": "AlternateKey6",
+      "FieldName": "AlternateKey5",
       "DataType": "StringType",
       "Ordinal": 108
     },
     {
-      "FieldName": "AlternateKey7",
+      "FieldName": "AlternateKey6",
       "DataType": "StringType",
       "Ordinal": 109
     },
     {
-      "FieldName": "AlternateKey8",
+      "FieldName": "AlternateKey7",
       "DataType": "StringType",
       "Ordinal": 110
     },
     {
-      "FieldName": "AlternateKey9",
+      "FieldName": "AlternateKey8",
       "DataType": "StringType",
       "Ordinal": 111
     },
     {
-      "FieldName": "AlternateKey10",
+      "FieldName": "AlternateKey9",
       "DataType": "StringType",
       "Ordinal": 112
     },
     {
-      "FieldName": "MaskedMemberID",
+      "FieldName": "AlternateKey10",
       "DataType": "StringType",
       "Ordinal": 113
     },
     {
-      "FieldName": "EnrolleeEducation",
+      "FieldName": "MaskedMemberID",
       "DataType": "StringType",
       "Ordinal": 114
     },
     {
-      "FieldName": "EnrolleeEmployment",
+      "FieldName": "EnrolleeEducation",
       "DataType": "StringType",
       "Ordinal": 115
     },
     {
-      "FieldName": "FullRowHash",
+      "FieldName": "EnrolleeEmployment",
       "DataType": "StringType",
       "Ordinal": 116
     },
-		{
-      "FieldName": "ProductID",
+    {
+      "FieldName": "FullRowHash",
       "DataType": "StringType",
       "Ordinal": 117
-    }    
+    },
+    {
+      "FieldName": "ProductID",
+      "DataType": "StringType",
+      "Ordinal": 118
+    }
   ]
 }

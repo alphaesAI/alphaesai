@@ -1,4 +1,4 @@
-CREATE TABLE #clientCode.gold_ma_member (
+CREATE TABLE silver_member (
  BISInternalPersonID string
 ,UniqueRecord string 
 ,ClientID  string
@@ -64,4 +64,4 @@ CREATE TABLE #clientCode.gold_ma_member (
 ,IsCurrentPMUP  int
 ,HashKey  string
 ,ProductID string
-) USING delta LOCATION '/mnt/#clientCode/Gold/MA/Client/Member'
+) USING delta LOCATION 'claimsprocessing.silver'

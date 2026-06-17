@@ -21,7 +21,7 @@ def main():
     base_source_dir = root_dir / "source/834"
 
     # The rest of the script works exactly the same
-    pending_file    = base_source_dir / "pending/member1.txt"
+    pending_file    = base_source_dir / "pending/mickey.txt"
     inprogress_dir  = base_source_dir / "inprogress"
     processed_dir   = base_source_dir / "processed"
     failed_dir      = base_source_dir / "failed"
@@ -72,5 +72,5 @@ def main():
 
 if __name__ == "__main__":
     # Output CSV configuration
-    output_file = root_dir / "temp/834/member1.csv"
+    output_file = root_dir / "temp/834/mickey.csv"
     main()

@@ -1,4 +1,4 @@
-CREATE TABLE #clientCode.platinum_dimmember (
+CREATE TABLE gold_dimmember (
  memberKey  bigint
 ,BISInternalPersonID  string
 ,uniquePersonKey  string
@@ -59,4 +59,4 @@ CREATE TABLE #clientCode.platinum_dimmember (
 ,effectiveEndDate  date
 ,isCurrent  boolean
 ,ProductID string
-) USING delta LOCATION '/mnt/#clientCode/Platinum/dimMember'
+) USING delta LOCATION 'claimsprocessing.gold.dimMember'
