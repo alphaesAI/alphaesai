@@ -1,4 +1,4 @@
-CREATE TABLE silver_member (
+CREATE TABLE IF NOT EXISTS claimsprocessing.silver.silver_member (
  BISInternalPersonID string
 ,UniqueRecord string 
 ,ClientID  string
@@ -64,4 +64,4 @@ CREATE TABLE silver_member (
 ,IsCurrentPMUP  int
 ,HashKey  string
 ,ProductID string
-) USING delta LOCATION 'claimsprocessing.silver'
+) USING delta;

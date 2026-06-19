@@ -1,4 +1,4 @@
-CREATE TABLE gold_dimmember (
+CREATE TABLE IF NOT EXISTS claimsprocessing.gold.gold_dimmember (
  memberKey  bigint
 ,BISInternalPersonID  string
 ,uniquePersonKey  string
@@ -59,4 +59,4 @@ CREATE TABLE gold_dimmember (
 ,effectiveEndDate  date
 ,isCurrent  boolean
 ,ProductID string
-) USING delta LOCATION 'claimsprocessing.gold.dimMember'
+) USING delta;

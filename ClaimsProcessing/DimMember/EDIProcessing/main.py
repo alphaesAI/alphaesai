@@ -16,12 +16,7 @@ sys.path.append(str(root_dir))
 from Shared.EDIProcessing import EDIProcessor, CSVConverter
 from DimMember.EDIProcessing.mapper import Mapper
 
-def main():
-    # Use the dynamic root directory instead of hardcoding
-    base_source_dir = root_dir / "source/834"
-
-    # The rest of the script works exactly the same
-    pending_file    = base_source_dir / "pending/mickey.txt"
+def process_single_file(pending_file, base_source_dir):
     inprogress_dir  = base_source_dir / "inprogress"
     processed_dir   = base_source_dir / "processed"
     failed_dir      = base_source_dir / "failed"
@@ -37,7 +32,7 @@ def main():
         # 2. Transition: Pending -> Inprogress
         os.makedirs(inprogress_dir, exist_ok=True)
         inprogress_file = inprogress_dir / active_file.name
-        print(f"Moving file to execution phase: {inprogress_file}")
+        print(f"\nMoving file to execution phase: {inprogress_file}")
         shutil.move(str(active_file), str(inprogress_file))
         active_file = inprogress_file  # Update pointer to current location
 
@@ -46,9 +41,11 @@ def main():
         mapper_data = Mapper().map_member(structured_json)
         
         # 4. Destination Directory Creation & Delivery (CSV)
+        # Dynamically name output CSV based on the input file name
+        output_file = root_dir / f"temp/834/{active_file.stem}.csv"
         os.makedirs(output_file.parent, exist_ok=True)
         CSVConverter().converter(mapper_data, str(output_file))
-        print("Pipeline execution logic completed successfully!")
+        print(f"Pipeline execution logic completed successfully for {active_file.name}!")
         
         # 5. Transition: Inprogress -> Processed
         os.makedirs(processed_dir, exist_ok=True)
@@ -57,7 +54,7 @@ def main():
         shutil.move(str(active_file), str(processed_file))
         
     except Exception as e:
-        print(f"Execution failed due to: {e}")
+        print(f"Execution failed for {active_file.name} due to: {e}")
         
         # 6. Transition: Inprogress -> Failed
         if active_file.exists():
@@ -67,10 +64,30 @@ def main():
             shutil.move(str(active_file), str(failed_file_path))
         else:
             print(f"Cannot move file to failed - it does not exist at: {active_file}")
+
+def main():
+    base_source_dir = root_dir / "source/834"
+    pending_dir = base_source_dir / "pending"
+    
+    if not pending_dir.exists():
+        print(f"Pending directory does not exist at: {pending_dir}")
+        return
+
+    # Find all items in the pending folder
+    all_items = list(pending_dir.iterdir())
+    
+    # Filter to process only files (ignoring sub-folders or hidden files)
+    pending_files = [f for f in all_items if f.is_file() and not f.name.startswith('.')]
+    
+    if not pending_files:
+        print("No files found in the pending directory to process.")
+        return
         
-        raise e
+    print(f"Found {len(pending_files)} file(s) to process.")
+
+    # Loop through each file dynamically
+    for file_path in pending_files:
+        process_single_file(file_path, base_source_dir)
 
 if __name__ == "__main__":
-    # Output CSV configuration
-    output_file = root_dir / "temp/834/mickey.csv"
     main()
