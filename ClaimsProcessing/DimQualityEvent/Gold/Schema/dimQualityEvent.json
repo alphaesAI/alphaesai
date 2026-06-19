@@ -1,0 +1,17 @@
+{
+    "SubLayerProcessing": [
+        {
+            "SubGroupEntity": "dimQualityEvent",
+            "DestinationTable": "claimsprocessing.qe_gold.dimQualityEvent",
+            "SourceTables": [
+                {
+                    "Entity": "GapsInCare",
+                    "SourceTable": "claimsprocessing.qe_silver.silver_gapsincare",
+                    "SourceFormat": "delta"
+                }
+            ],
+            "SQLScript": "SELECT hash(eventName) as qualityEventKey, eventName as qualityEventDescription\r\nFROM GapsInCare\r\nWHERE eventName IS NOT NULL AND eventName <> ''\r\nUNION\r\nSELECT -1 as qualityEventKey, 'UNKNOWN' as qualityEventDescription",
+            "MergeScript": "MERGE INTO DestinationTable t \r\nUSING \r\n(SELECT * FROM tempSQLScript) s\r\nON ifnull(s.qualityEventDescription, '') = ifnull(t.qualityEventDescription, '') \r\nWHEN NOT MATCHED \r\n    THEN INSERT (qualityEventKey, qualityEventDescription)\r\n        VALUES (s.qualityEventKey, s.qualityEventDescription)"
+        }
+    ]
+}
