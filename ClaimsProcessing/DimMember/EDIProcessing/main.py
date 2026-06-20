@@ -2,90 +2,67 @@ import os
 import sys
 import shutil
 from pathlib import Path
-import json
-import logging
-from datetime import datetime
 
-# Setup workspace environment paths
-file_dir = Path(os.getcwd())
-root_dir = file_dir.parent.parent
-print("root directory: ", root_dir)
-
+# Setup workspace environment paths - Use absolute path for Repos
+root_dir = Path("/Workspace/Repos/logi@openhealthagents.org/alphaesai/ClaimsProcessing")
 sys.path.append(str(root_dir))
 
 from Shared.EDIProcessing import EDIProcessor, CSVConverter
 from DimMember.EDIProcessing.mapper import Mapper
 
-def process_single_file(pending_file, base_source_dir):
-    inprogress_dir  = base_source_dir / "inprogress"
-    processed_dir   = base_source_dir / "processed"
-    failed_dir      = base_source_dir / "failed"
-    
-    # Active file reference tracker
+def move_file(src: Path, dest_dir: Path) -> Path:
+    dest_dir.mkdir(parents=True, exist_ok=True)
+    dest_file = dest_dir / src.name
+    shutil.move(str(src), str(dest_file))
+    return dest_file
+
+def process_single_file(pending_file: Path, base_source_dir: Path):
     active_file = pending_file
-
     try:
-        # 1. Verification Step
         if not active_file.exists():
-            raise FileNotFoundError(f"Input file not found in pending: {active_file}")
+            raise FileNotFoundError(f"Input file missing: {active_file}")
         
-        # 2. Transition: Pending -> Inprogress
-        os.makedirs(inprogress_dir, exist_ok=True)
-        inprogress_file = inprogress_dir / active_file.name
-        print(f"\nMoving file to execution phase: {inprogress_file}")
-        shutil.move(str(active_file), str(inprogress_file))
-        active_file = inprogress_file  # Update pointer to current location
+        # Pending -> Inprogress
+        active_file = move_file(active_file, base_source_dir / "inprogress")
 
-        # 3. Sequential Ingestion Pipeline Execution
+        # Pipeline Execution
         structured_json = EDIProcessor().parse(str(active_file))
+
+        # Extract ClientID and FileID from interchange segment (ISA06 and ISA13)
+        interchange = structured_json.get('interchange', {})
+        client_id = interchange.get('sender_id', '').strip()
+        file_id = interchange.get('control_number', '').strip()
+        print(f"Extracted ClientID: {client_id}, FileID: {file_id}")
+        
         mapper_data = Mapper().map_member(structured_json)
         
-        # 4. Destination Directory Creation & Delivery (CSV)
-        # Dynamically name output CSV based on the input file name
+        # Save output CSV
         output_file = root_dir / f"temp/834/{active_file.stem}.csv"
-        os.makedirs(output_file.parent, exist_ok=True)
+        output_file.parent.mkdir(parents=True, exist_ok=True)
         CSVConverter().converter(mapper_data, str(output_file))
-        print(f"Pipeline execution logic completed successfully for {active_file.name}!")
         
-        # 5. Transition: Inprogress -> Processed
-        os.makedirs(processed_dir, exist_ok=True)
-        processed_file = processed_dir / active_file.name
-        print(f"Moving file to completion phase: {processed_file}")
-        shutil.move(str(active_file), str(processed_file))
+        # Inprogress -> Processed
+        move_file(active_file, base_source_dir / "processed")
+        print(f"Successfully processed: {active_file.name}")
         
     except Exception as e:
-        print(f"Execution failed for {active_file.name} due to: {e}")
-        
-        # 6. Transition: Inprogress -> Failed
+        print(f"Failed processing {active_file.name}: {e}")
         if active_file.exists():
-            os.makedirs(failed_dir, exist_ok=True)
-            failed_file_path = failed_dir / active_file.name
-            print(f"Moving file to failure directory: {failed_file_path}")
-            shutil.move(str(active_file), str(failed_file_path))
-        else:
-            print(f"Cannot move file to failed - it does not exist at: {active_file}")
+            move_file(active_file, base_source_dir / "failed")
 
 def main():
     base_source_dir = root_dir / "source/834"
     pending_dir = base_source_dir / "pending"
     
+    print(f"Looking for files in: {pending_dir}")
+    
     if not pending_dir.exists():
-        print(f"Pending directory does not exist at: {pending_dir}")
+        print(f"Pending directory does not exist!")
         return
 
-    # Find all items in the pending folder
-    all_items = list(pending_dir.iterdir())
-    
-    # Filter to process only files (ignoring sub-folders or hidden files)
-    pending_files = [f for f in all_items if f.is_file() and not f.name.startswith('.')]
-    
-    if not pending_files:
-        print("No files found in the pending directory to process.")
-        return
-        
+    pending_files = [f for f in pending_dir.iterdir() if f.is_file() and not f.name.startswith('.')]
     print(f"Found {len(pending_files)} file(s) to process.")
 
-    # Loop through each file dynamically
     for file_path in pending_files:
         process_single_file(file_path, base_source_dir)
 
