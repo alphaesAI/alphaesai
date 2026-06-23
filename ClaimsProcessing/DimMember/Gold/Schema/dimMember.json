@@ -2,7 +2,7 @@
   "SubLayerProcessing": [
     {
       "SubGroupEntity": "dimensionMember",
-      "DestinationTable": "claimsprocessing.gold.dimensionMember",
+      "DestinationTable": "claimsprocessing.gold.gold_dimmember",
       "SourceTables": [
         {
           "Entity": "member",

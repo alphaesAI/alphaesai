@@ -2,11 +2,11 @@
     "SubLayerProcessing": [
         {
             "SubGroupEntity": "dimQualityEvent",
-            "DestinationTable": "claimsprocessing.qe_gold.dimQualityEvent",
+            "DestinationTable": "claimsprocessing.gold.gold_dimqualityevent",
             "SourceTables": [
                 {
                     "Entity": "GapsInCare",
-                    "SourceTable": "claimsprocessing.qe_silver.silver_gapsincare",
+                    "SourceTable": "claimsprocessing.silver.silver_gapsincare",
                     "SourceFormat": "delta"
                 }
             ],

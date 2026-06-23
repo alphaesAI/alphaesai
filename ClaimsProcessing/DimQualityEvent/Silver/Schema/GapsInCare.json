@@ -2,11 +2,11 @@
   "SubLayerProcessing": [
     {
       "SubGroupEntity": "gapsInCare",
-      "DestinationTable": "claimsprocessing.qe_silver.silver_gapsincare",
+      "DestinationTable": "claimsprocessing.silver.silver_gapsincare",
       "SourceTables": [
         {
           "Entity": "GapsInCare",
-          "SourceTable": "claimsprocessing.qe_bronze.quality_measures",
+          "SourceTable": "claimsprocessing.bronze.quality_measures",
           "SourceFormat": "parquet"
         }
       ],
