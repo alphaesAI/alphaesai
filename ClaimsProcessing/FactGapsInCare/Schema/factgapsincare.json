@@ -1,0 +1,38 @@
+{
+  "SubLayerProcessing": [
+    {
+      "SubGroupEntity": "factGapsInCare",
+      "DestinationTable": "claimsprocessing.gold.factgapsincare",
+      "SourceTables": [
+        {
+          "Entity": "gold_ma_gapsincare",
+          "SourceTable": "claimsprocessing.silver.silver_gapsincare",
+          "SourceFormat": "delta"
+        },
+        {
+          "Entity": "platinum_dimQualityYearMonth",
+          "SourceTable": "claimsprocessing.gold.gold_dimqualityyearmonth",
+          "SourceFormat": "delta"
+        },
+        {
+          "Entity": "platinum_dimMember",
+          "SourceTable": "claimsprocessing.gold.gold_dimmember",
+          "SourceFormat": "delta"
+        },
+        {
+          "Entity": "platinum_dimQualityMeasure",
+          "SourceTable": "claimsprocessing.gold.gold_dimqualitymeasure",
+          "SourceFormat": "delta"
+        },
+        {
+          "Entity": "platinum_dimQualityEvent",
+          "SourceTable": "claimsprocessing.gold.gold_dimqualityevent",
+          "SourceFormat": "delta"
+        }
+      ],
+      "SQLScript": "with SourceRaw AS(\r\n    select distinct gic.gapsInCareID\r\n    ,ifnull(dimQualityYearMonth.qualityYearMonthKey, -1) as qualityYearMonthKey\r\n    ,ifnull(dimMember.memberKey, -1) as memberKey\r\n    ,ifnull(dimQualityMeasure.qualityMeasureKey, -1) as qualityMeasureKey\r\n    ,ifnull(dimQualityEvent.qualityEventKey, -1) as qualityEventKey\r\n    ,gic.numerCnt\r\n    ,gic.denomCnt\r\n    ,gic.providerID as gapsEventProviderKey\r\n    ,gic.expectedRate\r\n    ,gic.PDC as pdc\r\n    ,gic.lastHBVal\r\n    ,gic.lastBPDia\r\n    ,gic.lastBPSys\r\n    ,gic.claimNumber\r\n    ,gic.hbTest   \r\n    from gold_ma_gapsincare gic\r\n        left join platinum_dimQualityYearMonth dimQualityYearMonth\r\n            on gic.yearMonth = concat(dimQualityYearMonth.yearNumber, lpad(dimQualityYearMonth.monthNumber,2,'0'))\r\n        left join platinum_dimMember dimMember\r\n            on gic.planMemberID = dimMember.planMemberID\r\n            and dimMember.isCurrent = true\r\n        left join platinum_dimQualityMeasure dimQualityMeasure\r\n            on gic.measurecode = dimQualityMeasure.qualityMeasureCode\r\n            and left(gic.yearMonth, 4) = dimQualityMeasure.measureYear\r\n            and gic.measureName = dimQualityMeasure.qualityMeasureName\r\n        left join platinum_dimQualityEvent dimQualityEvent\r\n            on gic.eventName = dimQualityEvent.qualityEventDescription\r\n)\r\nselect distinct gapsInCareID\r\n    ,qualityYearMonthKey\r\n    ,memberKey\r\n    ,qualityMeasureKey\r\n    ,qualityEventKey\r\n    ,numerCnt\r\n    ,denomCnt\r\n    ,gapsEventProviderKey\r\n    ,expectedRate\r\n    ,pdc\r\n    ,lastHBVal\r\n    ,lastBPDia\r\n    ,lastBPSys\r\n    ,claimNumber\r\n    ,hbTest\r\n    ,sha2(concat_ws('|', qualityYearMonthKey\r\n        ,memberKey\r\n        ,qualityMeasureKey\r\n        ,qualityEventKey\r\n        ,ifnull(numerCnt, '|')\r\n        ,ifnull(denomCnt, '|')\r\n        ,ifnull(gapsEventProviderKey, '|')\r\n        ,ifnull(expectedRate, '|')\r\n        ,ifnull(pdc, '|')\r\n        ,ifnull(lastHBVal, '|')\r\n        ,ifnull(lastBPDia, '|')\r\n        ,ifnull(lastBPSys, '|')\r\n        ,ifnull(claimNumber, '|')\r\n        ,ifnull(hbTest, '|'))\r\n    ,256) as fullRowHash\r\nfrom SourceRaw\r\n    ",
+      "DupScript": "SELECT gapsInCareID\r\n FROM tempSQLScript \r\n GROUP BY gapsInCareID\r\n HAVING COUNT(1) > 1\r\n\r\n",
+      "MergeScript": "MERGE INTO DestinationTable t\r\nUSING (SELECT * FROM tempSQLScript) s\r\n    ON s.gapsInCareID = t.gapsInCareID    \r\nWHEN MATCHED\r\nAND s.fullRowHash <> t.fullRowHash\r\nTHEN UPDATE SET\r\n     qualityYearMonthKey = s.qualityYearMonthKey\r\n    ,memberKey = s.memberKey\r\n    ,qualityMeasureKey = s.qualityMeasureKey\r\n    ,qualityEventKey = s.qualityEventKey\r\n    ,numerCnt = s.numerCnt\r\n    ,denomCnt = s.denomCnt\r\n    ,gapsEventProviderKey = s.gapsEventProviderKey\r\n    ,expectedRate = s.expectedRate\r\n    ,pdc = s.pdc\r\n    ,lastHBVal = s.lastHBVal\r\n    ,lastBPDia = s.lastBPDia\r\n    ,lastBPSys = s.lastBPSys\r\n    ,claimNumber = s.claimNumber\r\n    ,hbTest = s.hbTest\r\n    ,fullRowHash = s.fullRowHash\r\nWHEN NOT MATCHED \r\nTHEN INSERT\r\n(\r\n     gapsInCareID\r\n    ,qualityYearMonthKey\r\n    ,memberKey\r\n    ,qualityMeasureKey\r\n    ,qualityEventKey\r\n    ,numerCnt\r\n    ,denomCnt\r\n    ,gapsEventProviderKey\r\n    ,expectedRate\r\n    ,pdc\r\n    ,lastHBVal\r\n    ,lastBPDia\r\n    ,lastBPSys\r\n    ,claimNumber\r\n    ,hbTest\r\n    ,fullRowHash\r\n)\r\nVALUES\r\n(\r\n     s.gapsInCareID\r\n    ,s.qualityYearMonthKey\r\n    ,s.memberKey\r\n    ,s.qualityMeasureKey\r\n    ,s.qualityEventKey\r\n    ,s.numerCnt\r\n    ,s.denomCnt\r\n    ,s.gapsEventProviderKey\r\n    ,s.expectedRate\r\n    ,s.pdc\r\n    ,s.lastHBVal\r\n    ,s.lastBPDia\r\n    ,s.lastBPSys\r\n    ,s.claimNumber\r\n    ,s.hbTest\r\n    ,s.fullRowHash\r\n)\r\n"
+    }
+  ]
+}

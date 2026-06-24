@@ -1,0 +1,17 @@
+{
+  "SubLayerProcessing": [
+    {
+      "SubGroupEntity": "dimQualityMeasure",
+      "DestinationTable": "claimsprocessing.gold.gold_dimqualitymeasure",
+      "SourceTables": [
+        {
+          "Entity": "GapsInCare",
+          "SourceTable": "claimsprocessing.silver.silver_gapsincare",
+          "SourceFormat": "delta"
+        }
+      ],
+      "SQLScript": "select\r\n hash(concat(measureYear,'|',measureCode,'|',measureName)) as qualityMeasureKey\r\n,measureYear\r\n,measureCode as qualityMeasureCode\r\n,measureName as qualityMeasureName\r\nfrom\r\n(\r\nselect cast(left(yearMonth,4) as int) as measureYear, measureCode, measureName  \r\nfrom GapsInCare\r\n)\r\nwhere measureYear is not null and ifnull(measureCode,'')<>'' and ifnull(measureName,'')<>''\r\nunion\r\nselect -1 as qualityMeasureKey, 9999 as measureYear, 'UNKNOWN' as qualityMeasureCode, 'UNKNOWN' as qualityMeasureName",
+      "MergeScript": "MERGE INTO DestinationTable t \r\nUSING (SELECT * FROM tempSQLScript a)s\r\n ON s.measureYear = t.measureYear AND s.qualityMeasureCode = t.qualityMeasureCode AND s.qualityMeasureName = t.qualityMeasureName\r\n WHEN NOT MATCHED THEN INSERT \r\n ( \r\n  qualityMeasureKey\r\n ,measureYear\r\n ,qualityMeasureCode\r\n ,qualityMeasureName\r\n ) \r\n VALUES \r\n ( \r\n  s.qualityMeasureKey\r\n ,s.measureYear\r\n ,s.qualityMeasureCode\r\n ,s.qualityMeasureName\r\n )\r\n"
+    }
+  ]
+}
