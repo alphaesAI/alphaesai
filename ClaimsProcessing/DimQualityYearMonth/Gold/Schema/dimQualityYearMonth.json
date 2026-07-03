@@ -9,9 +9,9 @@
           "SourceTable": "claimsprocessing.silver.silver_gapsincare",
           "SourceFormat": "delta"
         }       
-      ],
-      "SQLScript": "WITH sourceTbl AS\r\n(SELECT DISTINCT CAST(LEFT(yearMonth,4) AS INT) AS yearNumber\r\n\t,CAST(RIGHT(yearMonth,2) AS INT) AS monthNumber\r\n\t,CASE  RIGHT(yearMonth,2)\r\n\t\tWHEN '01' THEN 'January'\r\n\t\tWHEN '02' THEN 'February'\r\n\t\tWHEN '03' THEN 'March'\r\n\t\tWHEN '04' THEN 'April'\r\n\t\tWHEN '05' THEN 'May'\r\n\t\tWHEN '06' THEN 'June'\r\n\t\tWHEN '07' THEN 'July'\r\n\t\tWHEN '08' THEN 'August'\r\n\t\tWHEN '09' THEN 'September'\r\n\t\tWHEN '10' THEN 'October'\r\n\t\tWHEN '11' THEN 'November'\r\n\t\tWHEN '12' THEN 'December'\r\n\t\tWHEN '13' THEN 'Year End (Jan. Runout)'\r\n\t\tWHEN '14' THEN 'Year End (Final)'\r\n\tEND AS monthName\r\n\t,CASE RIGHT(yearMonth,2)\r\n\t\tWHEN '13' THEN TRUE\r\n\t\tWHEN '14' THEN TRUE\r\n\t\tELSE FALSE\r\n\tEND AS isRunout\r\nFROM GapsInCare  \r\nWHERE yearMonth IS NOT NULL)\r\nSELECT hash(CONCAT(yearNumber,'|',monthNumber)) AS qualityYearMonthKey ,monthNumber,monthName,yearNumber ,isRunout \r\nFROM sourceTbl WHERE monthNumber IS NOT NULL \r\nAND yearNumber IS NOT NULL \r\nAND monthName IS NOT NULL\r\nUNION \r\nSELECT -1 as qualityYearMonthKey,0 as monthNumber,'UNKNOWN' as monthName,9999 as yearNumber,FALSE as isRunout",
-      "MergeScript": "MERGE INTO DestinationTable t \r\nUSING (SELECT * FROM tempSQLScript a)s\r\n\tON s.yearNumber = t.yearNumber \r\n\tAND s.monthNumber = t.monthNumber \r\n WHEN NOT MATCHED \r\n THEN INSERT \r\n ( \r\n  qualityYearMonthKey\r\n,monthNumber\r\n,monthName\r\n,yearNumber\r\n,isRunout\r\n ) \r\n VALUES \r\n ( \r\n  s.qualityYearMonthKey\r\n,s.monthNumber\r\n,s.monthName\r\n,s.yearNumber\r\n,s.isRunout\r\n )"
-    }
+      ]
+    },
+    "SQLScriptPath": "/Workspace/Repos/logi@openhealthagents.org/alphaesai/ClaimsProcessing/DimQualityYearMonth/Gold/DataProcessing/dimQualityYearMonthprocessing.sql",
+    "MergeScriptPath":
   ]
 }
