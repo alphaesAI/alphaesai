@@ -4,7 +4,7 @@ Verified against EDI parser output structure
 """
 
 MAPPINGS = {
-    "name": "Member 7.12 Comprehensive Schema Mapping",
+    "name": "Member Comprehensive Schema Mapping",
     "mapping_type": "only_mapped",
     
     "expressions": {
