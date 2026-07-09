@@ -1,6 +1,6 @@
 MERGE INTO DestinationTable t 
 USING (
-    SELECT * FROM tempQualityYearMonthSQLScript
+    SELECT * FROM temptableSQLScript
 ) s
 ON s.yearNumber = t.yearNumber 
 AND s.monthNumber = t.monthNumber 

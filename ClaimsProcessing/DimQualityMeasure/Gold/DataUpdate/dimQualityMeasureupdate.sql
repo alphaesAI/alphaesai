@@ -1,6 +1,6 @@
 MERGE INTO DestinationTable t 
 USING (
-    SELECT * FROM tempQualityMeasureSQLScript
+    SELECT * FROM temptableSQLScript
 ) s
 ON s.measureYear = t.measureYear 
 AND s.qualityMeasureCode = t.qualityMeasureCode 

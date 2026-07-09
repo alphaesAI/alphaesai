@@ -39,7 +39,7 @@ WITH source_cte AS (
             WHEN ss.gapsInCareID IS NOT NULL AND dt.gapsInCareID IS NULL THEN 'RecordInsert'
             ELSE CASE WHEN ss.HashRowKey <> dt.HashRowKey THEN 'RecordUpdate' END 
         END AS actions
-    FROM tempDimGapsInCareSQLScript ss 
+    FROM temptableSQLScript ss 
     FULL OUTER JOIN DestinationTable dt 
         ON IFNULL(ss.gapsInCareID, -1) = IFNULL(dt.gapsInCareID, -1) 
 )

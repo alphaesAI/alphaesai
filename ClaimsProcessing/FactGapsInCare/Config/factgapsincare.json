@@ -5,7 +5,7 @@
       "DestinationTable": "claimsprocessing.gold.factgapsincare",
       "SourceTables": [
         {
-          "Entity": "gold_ma_gapsincare",
+          "Entity": "silver_gapsincare",
           "SourceTable": "claimsprocessing.silver.silver_gapsincare",
           "SourceFormat": "delta"
         },
